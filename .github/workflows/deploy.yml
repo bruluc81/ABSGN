@@ -1,4 +1,4 @@
-name: .NET Core
+name: .NET Core Deploy
 
 on:
   push:
@@ -6,26 +6,27 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '5.0.x' # Update this to your .NET version
+        dotnet-version: '6.0.x' # Update this to your .NET Core version
 
-    - name: Build with dotnet
+    - name: Build project
       run: dotnet build --no-restore
 
-    - name: Publish
+    - name: Publish project
       run: dotnet publish -c Release -o ${{github.workspace}}/publish
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'your-app-name' # Replace with your App Service name
+        app-name: 'your-app-name' # Replace with your Azure App Service name
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         package: ${{ github.workspace }}/publish
