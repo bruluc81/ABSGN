@@ -16,17 +16,20 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '6.0.x' # Update this to your .NET Core version
+        dotnet-version: '6.0.x' # Update to your .NET Core version
+
+    - name: Navigate to project directory
+      run: cd MyWebApp # Update to the correct directory containing your .csproj file
 
     - name: Build project
       run: dotnet build --no-restore
 
     - name: Publish project
-      run: dotnet publish -c Release -o ${{github.workspace}}/publish
+      run: dotnet publish -c Release -o ${{github.workspace}}/MyWebApp/publish # Ensure correct output directory
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
-        app-name: lbswebapp # Replace with your Azure App Service name
+        app-name: 'your-app-name' # Replace with your Azure App Service name
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: ${{ github.workspace }}/MywebApp/publish
+        package: ${{github.workspace}}/MyWebApp/publish
